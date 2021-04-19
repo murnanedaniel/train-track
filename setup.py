@@ -18,23 +18,23 @@ dependencies = [
     "more_itertools",
     "simple_slurm",
     "memory_profiler",
-    "trackml@ https://github.com/LAL/trackml-library/tarball/master#egg=trackml-3",
 ]
 
 setup(
-    name="ExaTrack",
-    version="0.3.0",
+    name="traintrack",
+    version="0.1.0",
     description="Models, pipelines, and utilities for solving tracking problems with machine learning.",
     author="Daniel Murnane",
     install_requires=dependencies,
-    packages=find_packages(include=["exatrack", "src", "src.*"]),
+    packages=find_packages(include=["traintrack", "src", "src.*"]),
     entry_points={
         "console_scripts": [
-            "exapipe=exatrack.command_line_pipe:main",
-            "exabatch=exatrack.run_pipeline:batch_stage",
+            "traintrack=traintrack.command_line_pipe:main",
+            "ttbatch=traintrack.run_pipeline:batch_stage",
         ]
     },
     long_description=read("README.md"),
+    long_description_content_type="text/markdown",
     license="Apache License, Version 2.0",
     keywords=[
         "graph networks",
@@ -44,5 +44,5 @@ setup(
         "GNN",
         "machine learning",
     ],
-    url="https://github.com/HSF-reco-and-software-triggers/Tracking-ML-Exa.TrkX",
+    url="https://murnanedaniel.github.io/train-track/",
 )

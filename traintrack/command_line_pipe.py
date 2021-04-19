@@ -22,7 +22,7 @@ import argparse
 import yaml
 import logging
 
-from exatrack import run_pipeline
+from traintrack import run_pipeline
 
 
 def parse_pipeline():

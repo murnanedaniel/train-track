@@ -3,9 +3,9 @@ import argparse
 import yaml
 import logging
 
-from exatrack.utils.config_utils import load_config, combo_config, submit_batch
-from exatrack.utils.data_utils import autocast
-from exatrack.utils.model_utils import (
+from traintrack.utils.config_utils import load_config, combo_config, submit_batch
+from traintrack.utils.data_utils import autocast
+from traintrack.utils.model_utils import (
     get_resume_id,
     get_logger,
     build_model,
