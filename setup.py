@@ -26,7 +26,7 @@ setup(
     description="Models, pipelines, and utilities for solving tracking problems with machine learning.",
     author="Daniel Murnane",
     install_requires=dependencies,
-    packages=find_packages(include=["traintrack", "src", "src.*"]),
+    packages=find_packages(),
     entry_points={
         "console_scripts": [
             "traintrack=traintrack.command_line_pipe:main",
