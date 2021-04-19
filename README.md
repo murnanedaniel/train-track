@@ -1,12 +1,8 @@
 <div align="center">
 
-# Tracking with ML
+# TrainTrack ML
+### Quickly run stages of an ML pipeline from the command line
 
-<figure>
-    <img src="https://raw.githubusercontent.com/HSF-reco-and-software-triggers/Tracking-ML-Exa.TrkX/master/docs/media/final_wide.png" width="250"/>
-</figure>
-    
-### Exa.TrkX Collaboration
 
 
 [Documentation](https://hsf-reco-and-software-triggers.github.io/Tracking-ML-Exa.TrkX/)
@@ -16,9 +12,11 @@
 
 </div>
 
-Welcome to repository and documentation for ML pipelines and techniques by the ExatrkX Collaboration. 
+Welcome to repository and documentation the TrainTrack library. Documentation coming very soon! See [here](https://hsf-reco-and-software-triggers.github.io/Tracking-ML-Exa.TrkX/) for the documentation of the examples of this library. 
 
-## Objectives
+We are currently in the process of migrating this tool to this repository as a stand-alone library, please be patient, and this migration should be complete before May 2021.
+
+<!-- ## Objectives
 
 1. To abstract away the engineering required to run multiple stages of training and inference with combinations of hyperparameter configurations. [Pytorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning) is used for this, and is a good start, but this library extends Lightning to multiple modules run in series in some dependent way.
 2. To present a set of templates, best practices and results gathered from significant trial and error, to speed up the development of others in the domain of machine learning for high energy physics. We focus on applications specific to detector physics, but many tools can be applied to other areas, and these are collected in an application-agnostic way in the [Tools](https://hsf-reco-and-software-triggers.github.io/Tracking-ML-Exa.TrkX/tools/overview/) section.
@@ -139,4 +137,4 @@ A very possible error will be
 ```
 OSError: libcudart.so.XX.X: cannot open shared object file: No such file or directory
 ```
-This indicates a mismatch between CUDA versions. Identify the library that called the error, and ensure there are no versions of this library installed in parallel, e.g. from a previous `pip --user` install.
+This indicates a mismatch between CUDA versions. Identify the library that called the error, and ensure there are no versions of this library installed in parallel, e.g. from a previous `pip --user` install. -->
