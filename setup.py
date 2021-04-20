@@ -22,7 +22,7 @@ dependencies = [
 
 setup(
     name="traintrack",
-    version="0.1.0",
+    version="0.1.3",
     description="Models, pipelines, and utilities for solving tracking problems with machine learning.",
     author="Daniel Murnane",
     install_requires=dependencies,

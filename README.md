@@ -12,9 +12,26 @@
 
 </div>
 
-Welcome to repository and documentation the TrainTrack library. Documentation coming very soon! See [here](https://hsf-reco-and-software-triggers.github.io/Tracking-ML-Exa.TrkX/) for the documentation of the examples of this library. 
+Welcome to repository and documentation the TrainTrack library. Detailed documentation coming very soon! See [here](https://hsf-reco-and-software-triggers.github.io/Tracking-ML-Exa.TrkX/) for the documentation of the examples of this library. 
 
 We are currently in the process of migrating this tool to this repository as a stand-alone library, please be patient, and this migration should be complete before May 2021.
+
+## Install
+
+TrainTrack is most easily installed with pip:
+```
+pip install traintrack
+```
+
+## Objective
+
+The aim of TrainTrack is simple: Given any set of self-contained [Pytorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning) modules, run them in a serial and trackable way. 
+
+At its heart, TrainTrack is nothing more than a loop over the stages defined in a `pipeline.yaml` configuration file. However, it can also handle data processing steps (i.e. non-trainable modules), automatically creates grid scans over combinations of hyperparameters, logs training with (currently) either Tensorboard or Weights & Biases, and can run separate, dependent Slurm batch jobs. It also has an opinionated approach to how data is passed from stage to stage, via Lightning callbacks. In this way, the only code that needs to be written is Lightning modules, all other boilerplate and tracking is handled by TrainTrack. 
+
+## Example
+
+**Todo**
 
 <!-- ## Objectives
 

@@ -1,3 +1,15 @@
+"""The main logic of the library to run a traintrack pipeline.
+
+This module contains the main steps of running a pipeline, and is called from the `command_line_pipe` module, which is really just a helper for the command line script `traintrack`. This module is also called in batch mode to directly handle the hyperparameters of each stage, passed in as an arbitrary number of command line args.
+
+Example:
+    Typically, one wouldn't call this module directly, but given a valid set of hyperparams, and a model name, one could call the `batch_stage` function from the command line. Indeed, this may end up being the way for external libraries to interact with the traintrack pipeline (e.g. a Weights & Biases hyperparameter optimization agent).
+        
+Todo:
+    * Remove unnecessary run args
+    * Handle verbose properly as passed from either batch or inside command_line_pipe
+"""
+
 import sys, os
 import argparse
 import yaml
