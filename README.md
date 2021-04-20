@@ -1,5 +1,9 @@
 <div align="center">
 
+<figure>
+    <img src="https://raw.githubusercontent.com/murnanedaniel/train-track/master/docs/media/logo.png" width="250"/>
+</figure>
+    
 # TrainTrack ML
 ### Quickly run stages of an ML pipeline from the command line
 
