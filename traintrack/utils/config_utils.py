@@ -50,7 +50,7 @@ def submit_batch(batch_config_file, config, project_config, running_id=None):  #
 
     # Run the slurm submission command
     slurm_command = (
-        "\n".join(custom_batch_setup) + """\n exabatch """ + command_line_args
+        "\n".join(custom_batch_setup) + """\n ttbatch """ + command_line_args
     )
 
     # If there are setup commands to run before the batch submission, prepend them here
