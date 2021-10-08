@@ -22,8 +22,8 @@ dependencies = [
 
 setup(
     name="traintrack",
-    version="0.1.3",
-    description="Models, pipelines, and utilities for solving tracking problems with machine learning.",
+    version="0.1.4",
+    description="A simple helper to run pipelines of PytorchLightning models",
     author="Daniel Murnane",
     install_requires=dependencies,
     packages=find_packages(),
@@ -37,12 +37,12 @@ setup(
     long_description_content_type="text/markdown",
     license="Apache License, Version 2.0",
     keywords=[
-        "graph networks",
-        "track finding",
-        "tracking",
-        "seeding",
-        "GNN",
         "machine learning",
+        "MLOps",
+        "Pytorch",
+        "PytorchLightning",
+        "Lightning",
+        "pipeline"
     ],
-    url="https://murnanedaniel.github.io/train-track/",
+    url="https://github.com/murnanedaniel/train-track",
 )
