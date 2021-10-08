@@ -1,4 +1,4 @@
-import os, sys
+import os
 import yaml
 import importlib
 import logging
@@ -17,7 +17,7 @@ from simple_slurm import Slurm
 def find_checkpoint(run_id, path):  # M
     for (root_dir, dirs, files) in os.walk(path):
         if run_id in dirs:
-            latest_run_path = os.path.join(root_dir, run_id, "last.ckpt")
+            latest_run_path = os.path.join(root_dir, run_id, "checkpoints/last.ckpt")
             return latest_run_path
 
 
@@ -34,15 +34,15 @@ def handle_config_cases(some_config):  # C
         return [some_config]
 
 
-def submit_batch(batch_config_file, config, project_config, running_id=None):  # C
+def submit_batch(config, project_config, running_id=None):  # C
 
-    with open(config["batch"]) as f:
+    with open(config["batch_config"]) as f:
         batch_config = yaml.load(f, Loader=yaml.FullLoader)
 
     command_line_args = dict_to_args(config)
     slurm = Slurm(**batch_config)
 
-    if running_id is not None:
+    if running_id is not None and project_config["serial"]:
         print("Dependency on ID: {}".format(running_id))
         slurm.set_dependency(dict(afterok=running_id))
 
@@ -75,7 +75,7 @@ def find_config(name, path):  # C
             return os.path.join(root, name)
 
 
-def load_config(stage, resume_id, project_config):  # C
+def load_config(stage, resume_id, project_config, run_args):  # C
 
     if resume_id is None:
 
@@ -83,8 +83,6 @@ def load_config(stage, resume_id, project_config):  # C
             stage["config"],
             os.path.join(project_config["libraries"]["model_library"], stage["set"]),
         )
-
-        print(stage_config_file)
 
         with open(stage_config_file) as f:
             config = yaml.load(os.path.expandvars(f.read()), Loader=yaml.FullLoader)
@@ -97,6 +95,7 @@ def load_config(stage, resume_id, project_config):  # C
         )
         ckpnt = torch.load(ckpnt_path, map_location=torch.device("cpu"))
         config = ckpnt["hyper_parameters"]
+        config["checkpoint_path"] = ckpnt_path
 
     if "override" in stage.keys():
         config.update(stage["override"])
@@ -104,7 +103,11 @@ def load_config(stage, resume_id, project_config):  # C
     # Add pipeline configs to model_config
     config.update(project_config["libraries"])
     config.update(stage)
-
+    if ("inference" in run_args) and run_args.inference:
+        config["inference"] = True
+    elif ("inference" in run_args) and (not run_args.inference) and (not run_args.slurm):
+        config["inference"] = False
+        
     logging.info("Config found and built")
     return config
 

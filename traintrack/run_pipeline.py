@@ -14,6 +14,7 @@ import sys, os
 import argparse
 import yaml
 import logging
+import torch
 
 from traintrack.utils.config_utils import load_config, combo_config, submit_batch
 from traintrack.utils.data_utils import autocast
@@ -24,8 +25,7 @@ from traintrack.utils.model_utils import (
     build_trainer,
 )
 
-
-def parse_pipeline():
+def parse_batch_pipeline():
 
     """Parse command line arguments."""
 
@@ -34,10 +34,8 @@ def parse_pipeline():
         argparse.ArgumentParser("run_pipeline.py"),
     )
     add_run_arg, add_model_arg = run_parser.add_argument, model_parser.add_argument
-    add_run_arg("--batch", action="store_true")
     add_run_arg("--verbose", action="store_true")
     add_run_arg("pipeline_config", nargs="?", default="configs/pipeline_test.yaml")
-    add_run_arg("batch_config", nargs="?", default="configs/batch_gpu_default.yaml")
 
     run_parsed, model_to_parse = run_parser.parse_known_args()
     [
@@ -54,7 +52,9 @@ def parse_pipeline():
 
 def batch_stage():
     print("Running batch from top with args:", sys.argv)
-    run_args, model_args = parse_pipeline()
+    run_args, model_args = parse_batch_pipeline()
+    model_config = vars(model_args)
+    if "inference" not in model_config: model_config["inference"] = False
 
     logging_level = logging.INFO if run_args.verbose else logging.WARNING
     logging.basicConfig(level=logging_level)
@@ -62,7 +62,7 @@ def batch_stage():
     logging.info("Parsed run args: {}".format(run_args))
     logging.info("Parsed model args: {}".format(model_args))
 
-    run_stage(**vars(model_args))
+    run_stage(**model_config)
 
 
 @autocast
@@ -91,12 +91,18 @@ def train_stage(model, model_config):
     # Load the trainer, handling any resume conditions
     trainer = build_trainer(model_config, logger)
 
-    # Run training
-    trainer.fit(model)
-
-    # Run testing and, if requested, inference callbacks to continue the pipeline
-    trainer.test()
-
+    # Run training, unless in inference mode
+    if not model_config["inference"]:
+        trainer.fit(model)
+    else:
+        # Run testing and, if requested, inference callbacks to continue the pipeline
+        if model_config["checkpoint_path"]:
+            print("Loading state dict")
+            model.load_state_dict(torch.load(model_config["checkpoint_path"])["state_dict"])
+        else:
+            logging.error("Cannot run inference without a resume ID")
+            
+    trainer.test(model)
 
 def data_stage(model, model_config):
     logging.info("Preparing data")
@@ -126,18 +132,18 @@ def start(args):
         resume_id = get_resume_id(stage)
 
         # Get config file, from given location OR from ckpnt
-        model_config = load_config(stage, resume_id, project_config)
+        model_config = load_config(stage, resume_id, project_config, args)
         logging.info("Single config: {}".format(model_config))
-
+        
         model_config_combos = (
             combo_config(model_config) if resume_id is None else [model_config]
         )
         logging.info("Combo configs: {}".format(model_config_combos))
 
         for config in model_config_combos:
-            if args.batch:
+            if args.slurm:
                 running_id = submit_batch(
-                    args.batch_config, config, project_config, running_id
+                    config, project_config, running_id
                 )
             else:
                 run_stage(**config)

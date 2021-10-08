@@ -3,7 +3,7 @@
 This module parses the command-line arguments given to the entry-point of the Exatrack pipeline. 
 
 Example:
-    One would run this simply with `exapipe`, which will load in a `config/pipeline_test.yaml` pipeline config file. Provided that file exists and is well-defined (see docs or examples) then the pipeline will start to run. To test behaviour on a Slurm system, run `exapipe --batch`. 
+    One would run this simply with `traintrack`, which will load in a `config/pipeline_test.yaml` pipeline config file. Provided that file exists and is well-defined (see docs or examples) then the pipeline will start to run. To test behaviour on a Slurm system, run `traintrack --batch`. 
     
 Attributes:
    - pipeline_config: The yaml file listing the stages to run, in serial. If in batch mode, this will generate Slurm dependencies to ensure they run in series (NB: This only works if running on the same cluster! E.g. Cori GPU and CPU can NOT see each others dependencies at this time)
@@ -34,11 +34,11 @@ def parse_pipeline():
         argparse.ArgumentParser("run_pipeline.py"),
     )
     add_run_arg, add_model_arg = run_parser.add_argument, model_parser.add_argument
-    add_run_arg("--batch", action="store_true")
+    add_run_arg("--slurm", action="store_true")
+    add_run_arg("--inference", action="store_true")
     add_run_arg("--verbose", action="store_true")
     add_run_arg("--run-stage", action="store_true")
     add_run_arg("pipeline_config", nargs="?", default="configs/pipeline_test.yaml")
-    add_run_arg("batch_config", nargs="?", default="configs/batch_gpu_default.yaml")
 
     run_parsed, model_to_parse = run_parser.parse_known_args()
     [
@@ -51,7 +51,6 @@ def parse_pipeline():
     model_parsed, _ = model_parser.parse_known_args()
 
     return run_parsed, model_parsed
-
 
 def main():
 

@@ -9,6 +9,7 @@ import torch
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger, TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
+import wandb
 
 from simple_slurm import Slurm
 
@@ -35,6 +36,10 @@ def find_model(model_set, model_name, model_library):  # M
         if model_name
         in getattr(mod, "__all__", [n for n in dir(mod) if not n.startswith("_")])
     ]
+    if len(names) == 0:
+        print("Couldn't find model or callback", model_name)
+        return None
+        
     # Return the class of model_name
     model_class = getattr(names[0], model_name)
     logging.info("Model found")
@@ -58,7 +63,8 @@ def build_model(model_config):  # M
 def get_logger(model_config):  # M
 
     logger_choice = model_config["logger"]
-
+    if "project" not in model_config.keys(): model_config["project"] = "my_project"
+    
     if logger_choice == "wandb":
         logger = WandbLogger(
             project=model_config["project"],
@@ -82,7 +88,7 @@ def get_logger(model_config):  # M
 
 def callback_objects(model_config, lr_logger=False):  # M
 
-    callback_list = model_config["callbacks"]
+    callback_list = model_config["callbacks"] if "callbacks" in model_config.keys() else None
     callback_list = handle_config_cases(callback_list)
 
     model_set = model_config["set"]
@@ -101,10 +107,11 @@ def callback_objects(model_config, lr_logger=False):  # M
 
 def build_trainer(model_config, logger):  # M
 
-    #     model_filepath = os.path.join(model_config["artifact_library"], model_config["project"], logger.experiment._run_id, "last.ckpt")
-
+    fom = model_config["fom"] if "fom" in model_config.keys() else "val_loss"
+    fom_mode = model_config["fom_mode"] if "fom_mode" in model_config.keys() else "min"
+    
     checkpoint_callback = ModelCheckpoint(
-        monitor="val_loss", save_top_k=2, save_last=True, mode="min"
+        monitor=fom, save_top_k=2, save_last=True, mode=fom_mode
     )
 
     gpus = 1 if torch.cuda.is_available() else 0
@@ -116,18 +123,18 @@ def build_trainer(model_config, logger):  # M
             max_epochs=model_config["max_epochs"],
             gpus=gpus,
             logger=logger,
-            checkpoint_callback=checkpoint_callback,
-            callbacks=callback_objects(model_config),
+            callbacks=callback_objects(model_config)+[checkpoint_callback],
         )
     else:
+        num_sanity = model_config["sanity_steps"] if "sanity_steps" in model_config else 2
         # Here we assume
         trainer = pl.Trainer(
-            resume_from_checkpoint=model_filepath,
+            resume_from_checkpoint=model_config["checkpoint_path"],
             max_epochs=model_config["max_epochs"],
             gpus=gpus,
+            num_sanity_val_steps=num_sanity,
             logger=logger,
-            checkpoint_callback=checkpoint_callback,
-            callbacks=callback_objects(model_config),
+            callbacks=callback_objects(model_config)+[checkpoint_callback],
         )
 
     logging.info("Trainer built")
