@@ -16,8 +16,6 @@
 
 Welcome to repository and documentation the TrainTrack library. Detailed documentation coming very soon! See [here](https://hsf-reco-and-software-triggers.github.io/Tracking-ML-Exa.TrkX/) for the documentation of the examples of this library. 
 
-We are currently in the process of migrating this tool to this repository as a stand-alone library, please be patient, and this migration should be complete before May 2021.
-
 ## Install
 
 TrainTrack is most easily installed with pip:
@@ -33,7 +31,77 @@ At its heart, TrainTrack is nothing more than a loop over the stages defined in 
 
 ## Example
 
-**Todo**
+`traintrack` uses two ingredients to run and track your training pipeline: 
+1. A project configuration file
+2. A pipeline configuration file
+
+It also makes one or two assumptions about the structure of your project. For project `MyFirstMNIST`, we should structure it as
+```
+📦 MyFirstMNIST
+┣ 📂 architectures
+┣ 📂 notebooks
+┣ 📂 configs
+┃ ┣ 📜 project_config.yaml
+┃ ┗ 📜 my_first_pipeline.yaml
+┗ 📂 logs
+```
+**Note:** Only `configs/project_config.yaml` is a required file. All else is configurable. An example `project_config.yaml`:
+```
+# project_config.yaml
+
+# Location of libraries
+libraries:
+    model_library: architectures
+    artifact_library: /my/checkpoint/directory
+    
+
+# The lines you would like/need in a batch script before the call to pipeline.py
+custom_batch_setup:
+    - conda activate my-favorite-environment
+    
+# If you need to set up some environment before a batch is submitted, define it here in order of commands to run
+command_line_setup:
+    - module load cuda
+    
+# If you need to run jobs serially, set to true
+serial: False
+
+# Which logger to use - options are Weights & Biases [wandb], TensorBoard [tb], or [None]
+logger: wandb
+```
+
+We can launch a vanilla run of TrainTrack with 
+```
+traintrack configs/my_first_pipeline.yaml
+```
+This trains and performs inference callbacks in the terminal. 
+
+
+## A Pipeline
+
+The pipeline config file defines a pipeline, for example:
+```
+# my_first_pipeline.yaml
+
+stages:
+    - {set: CNN, name: ResNet50, config: test_train.yaml}
+
+```
+
+which presumes a directory structure of:
+
+```
+📦 MyFirstMNIST
+┣ 📂 architectures
+┃ ┗ 📂 CNN
+┃ ┃ ┣ 📜 cnn_base.py
+┃ ┃ ┣ 📜 test_train.yaml
+┃ ┃ ┗ 📂 Models
+┃ ┃ ┃ ┗ 📜 resnet.py
+
+```
+
+Again, see [this repository](https://hsf-reco-and-software-triggers.github.io/Tracking-ML-Exa.TrkX/tree/master/Pipelines/Common_Tracking_Example) for example pipelines in action.
 
 <!-- ## Objectives
 
