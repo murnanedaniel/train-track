@@ -80,6 +80,7 @@ venv.bak/
 *lightning_logs*
 *logs*
 *.ckpt
+*~
 
 # W&B
 *wandb*

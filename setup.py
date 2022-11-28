@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf-8
+
 import os
 from setuptools import setup, find_packages
 
@@ -37,12 +40,12 @@ setup(
     long_description_content_type="text/markdown",
     license="Apache License, Version 2.0",
     keywords=[
-        "machine learning",
+        "Machine Learning",
         "MLOps",
         "Pytorch",
         "PytorchLightning",
         "Lightning",
-        "pipeline"
+        "Pipeline"
     ],
     url="https://github.com/murnanedaniel/train-track",
 )

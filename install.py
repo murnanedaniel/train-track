@@ -1,9 +1,13 @@
-import subprocess
+#!/usr/bin/env python
+# coding: utf-8
+
 import sys
 import os
+import subprocess
 
 
 def install(package, file_link=None, r=False, e=False):
+    
     if file_link:
         output = subprocess.run(
             [sys.executable, "-m", "pip", "install", package, "-f", file_link],
