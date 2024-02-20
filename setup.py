@@ -25,7 +25,7 @@ dependencies = [
 
 setup(
     name="traintrack",
-    version="0.1.4",
+    version="0.1.6",
     description="A simple helper to run pipelines of PytorchLightning models",
     author="Daniel Murnane",
     install_requires=dependencies,
