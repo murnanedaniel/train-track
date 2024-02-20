@@ -14,7 +14,7 @@ dependencies = [
     "scipy",
     "pandas",
     "matplotlib",
-    "sklearn",
+    "scikit-learn",
     "pyyaml>=5.1",
     "pytorch-lightning",
     "decorator",
